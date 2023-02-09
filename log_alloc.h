@@ -91,13 +91,12 @@ private:
 
 // Return true if allocators b and a can be safely interchanged. "Safely interchanged" means that b could be
 // used to deallocate storage obtained through a and vice versa.
-/*
-template <class T1, class T2>
-inline bool operator==(const logging_allocator<T1> &a, const logging_allocator<T2> &b) noexcept
+template <class T1, class T2, int N1, int N2>
+bool operator==(const logging_allocator<T1, N1> &a, const logging_allocator<T2, N2> &b) noexcept
 {
     if (!std::is_same<T1, T2>::value)
         return false;
     return a == b;
 }
-*/
+
 

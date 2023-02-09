@@ -53,7 +53,7 @@ public:
 
   const T &next()
   {
-    if(!current)
+    if(!hasNext())
       throw dc_exception("nullptr reference in dumb_container::next()");
     T& v = current->value;
     current = current->next;

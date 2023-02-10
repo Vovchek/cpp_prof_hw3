@@ -21,13 +21,10 @@ struct logging_allocator
     logging_allocator() = default;
     ~logging_allocator()
     {
-        if (mem)
-        {
 #if defined(USE_PRETTY) || defined(DO_LOG)
-            std::cout << "mem free @" << mem << '\n';
+        std::cout << "mem free @" << mem << '\n';
 #endif
-            std::free(mem);
-        }
+        std::free(mem);
     }
 
     T *allocate(std::size_t n)
@@ -98,5 +95,3 @@ bool operator==(const logging_allocator<T1, N1> &a, const logging_allocator<T2, 
         return false;
     return a == b;
 }
-
-

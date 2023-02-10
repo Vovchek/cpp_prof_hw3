@@ -6,13 +6,15 @@ class dumb_iterator
 {
 };
 
-class dc_exception: public std::exception {
-  std::string msg {"Exception in dumb container"};
-  public:
-    dc_exception() = default;
-    dc_exception(const char *s) : msg{s} {};
-    ~dc_exception() = default;
-    std::string& what() {return msg;}
+class dc_exception : public std::exception
+{
+  std::string msg{"Exception in dumb container"};
+
+public:
+  dc_exception() = default;
+  dc_exception(const char *s) : msg{s} {};
+  ~dc_exception() = default;
+  const char *what() const noexcept final { return msg.c_str(); }
 };
 
 template <typename T>
@@ -28,9 +30,19 @@ class dumb_container
 {
 public:
   dumb_container() = default;
-  ~dumb_container() = default;
+  ~dumb_container()
+  {
+    current = head;
+    while (current)
+    {
+      auto p = current;
+      current = current->next;
+      node_alloc.destroy(p);
+      node_alloc.deallocate(p, 1);
+    }
+  };
 
-  template<typename TT>
+  template <typename TT>
   void append(TT &&item)
   {
     if (!head)
@@ -53,9 +65,9 @@ public:
 
   const T &next()
   {
-    if(!hasNext())
+    if (!hasNext())
       throw dc_exception("nullptr reference in dumb_container::next()");
-    T& v = current->value;
+    T &v = current->value;
     current = current->next;
     return v;
   }
@@ -69,7 +81,7 @@ private:
   Node<T> *head{nullptr};
   Node<T> *tail{nullptr};
   Node<T> *current{nullptr};
-  using NodeAllocator = typename A:: template rebind<Node<T>>::other;
+  using NodeAllocator = typename A::template rebind<Node<T>>::other;
   NodeAllocator node_alloc;
 };
 
